@@ -316,6 +316,7 @@ namespace LineTrader
         {
             this.Name = p.InstrumentName;
             this.Charts = new Dictionary<long, Line[]>();
+            this.Current = p;
         }
 
         public Instrument(MT4.Command c)

@@ -102,11 +102,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Properties\LineTrader.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>LineTrader.settings</DependentUpon>
-    </Compile>
     <Compile Include="MT4Server.cs" />
     <Compile Include="OandaClient.cs" />
     <Compile Include="OrderSide.cs" />
@@ -146,10 +141,6 @@
     </EmbeddedResource>
     <None Include="app.manifest" />
     <AppDesigner Include="Properties\" />
-    <None Include="Properties\LineTrader.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>LineTrader.Designer.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

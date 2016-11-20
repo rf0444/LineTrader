@@ -12,7 +12,16 @@ int OnInit() {
 void OnDeinit(const int reason) {
   send_to_server(close_data());
 }
+
+double prev_ask = 0;
+double prev_bid = 0;
+
 void OnTick() {
+  if (prev_ask == Ask && prev_bid == Bid) {
+    return;
+  }
+  prev_ask = Ask;
+  prev_bid = Bid;
   send_to_server(tick_data());
 }
 void OnChartEvent(const int id, const long &lparam, const double &dparam, const string &sparam) {

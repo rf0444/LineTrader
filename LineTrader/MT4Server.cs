@@ -5,14 +5,14 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Web;
 using System.Web.Script.Serialization;
 
-namespace LineTrader.MT4
+namespace LineTrader
 {
 
-    public class Server : IDisposable
+    public class MT4Server : IDisposable
     {
         private ServiceHost host;
 
-        public Server(Service service)
+        public MT4Server(Model.Service service)
         {
             this.host = new ServiceHost(new WebApp(service), new Uri("http://localhost/"));
             this.host.Description.Behaviors.Find<ServiceDebugBehavior>().HttpHelpPageEnabled = false;
@@ -34,9 +34,9 @@ namespace LineTrader.MT4
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class WebApp
     {
-        private Service service;
+        private Model.Service service;
 
-        public WebApp(Service service)
+        public WebApp(Model.Service service)
         {
             this.service = service;
         }
@@ -48,7 +48,7 @@ namespace LineTrader.MT4
             var reader = new StreamReader(input);
             var body = reader.ReadToEnd()?.Replace("\0", "");
             reader.Dispose();
-            var command = new JavaScriptSerializer().Deserialize<MT4.Command>(body);
+            var command = new JavaScriptSerializer().Deserialize<Model.MT4.Command>(body);
             WebOperationContext.Current.OutgoingResponse.StatusCode = this.service.Apply(command);
         }
     }

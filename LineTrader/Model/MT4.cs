@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LineTrader.MT4
+namespace LineTrader.Model.MT4
 {
     public class Command
     {

@@ -1,4 +1,4 @@
-﻿namespace LineTrader
+﻿namespace LineTrader.Model
 {
     public enum OrderSide { Buy, Sell }
 
@@ -14,7 +14,7 @@
             }
         }
 
-        public static int Direction(this OrderSide x)
+        public static int Direction(this OrderSide? x)
         {
             switch (x)
             {

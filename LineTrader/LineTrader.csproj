@@ -53,8 +53,17 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ReactiveProperty, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ReactiveProperty.3.3.1\lib\net45\ReactiveProperty.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ReactiveProperty.NET45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ReactiveProperty.3.3.1\lib\net45\ReactiveProperty.NET45.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Numerics" />
@@ -105,16 +114,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Instrument.cs" />
     <Compile Include="MT4Server.cs" />
-    <Compile Include="OandaClient.cs" />
-    <Compile Include="OrderSide.cs" />
+    <Compile Include="Model\OandaClient.cs" />
+    <Compile Include="Model\OrderSide.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Service.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Model\Service.cs" />
+    <Compile Include="View\Line.cs" />
+    <Compile Include="View\OrderPreview.cs" />
+    <Compile Include="View\Positions.cs" />
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -122,14 +135,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MT4.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Model\MT4.cs" />
+    <Compile Include="Util\ObservableSortedList.cs" />
+    <Compile Include="View\Lines.cs" />
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Oanda.cs" />
+    <Compile Include="Model\Oanda.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -165,6 +180,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

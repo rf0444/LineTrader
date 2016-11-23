@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LineTrader.Oanda
+namespace LineTrader.Model.Oanda
 {
     public class Account
     {
@@ -64,7 +64,7 @@ namespace LineTrader.Oanda
         private string side;
         public OrderSide? Side
         {
-            get { return OrderSides.ToOrderSide(this.side); }
+            get { return this.side.ToOrderSide(); }
             set { this.side = value?.ToString().ToLower(); }
         }
         public string Type { get; set; } = "market";
@@ -125,8 +125,9 @@ namespace LineTrader.Oanda
     public class Position
     {
         public long id { get; set; }
-        public decimal units { get; set; }
+        public int units { get; set; }
         public string side { get; set; }
+        public OrderSide? OrderSide { get { return side.ToOrderSide(); } }
         public string instrument { get; set; }
         public string InstrumentName { get { return instrument.Replace("_", "/"); } }
         public string time { get; set; }

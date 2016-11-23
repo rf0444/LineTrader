@@ -1,4 +1,4 @@
-﻿<Window x:Class="LineTrader.MainWindow"
+﻿<Window x:Class="LineTrader.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -32,7 +32,7 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <DataGrid Grid.Row="0" Grid.Column="1" Margin="2" Name="dataGrid_Lines" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
+                    <DataGrid Grid.Row="0" Grid.Column="1" Margin="2" Name="dataGrid_Lines" AutoGenerateColumns="False" CanUserSortColumns="False" CanUserAddRows="False" SelectionMode="Single" ItemsSource="{Binding Value}">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="B" Width="20" IsReadOnly="True">
                                 <DataGridTemplateColumn.HeaderStyle>
@@ -96,7 +96,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TabControl Name="tabControl_order" Grid.Row="1">
+        <TabControl Name="tabControl_order" Grid.Row="1" SelectionChanged="tabControl_order_SelectionChanged">
             <TabItem Name="tabItem_order" Header="注文">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -107,7 +107,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <DataGrid Grid.Row="0" Grid.Column="0" Margin="5" HeadersVisibility="None" Name="dataGrid_BuySummary" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="Cell" ItemsSource="{Binding}">
+                    <DataGrid Grid.Row="0" Grid.Column="0" Margin="5" HeadersVisibility="None" Name="dataGrid_BuyPreview" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="Cell" ItemsSource="{Binding}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="100" Binding="{Binding Name}" />
                             <DataGridTextColumn Width="80" Binding="{Binding Note}">
@@ -127,7 +127,7 @@
                             <DataGridTextColumn Width="36" Binding="{Binding Unit}" />
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid Grid.Row="0" Grid.Column="1" Margin="5" HeadersVisibility="None" Name="dataGrid_SellSummary" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="Cell" ItemsSource="{Binding}">
+                    <DataGrid Grid.Row="0" Grid.Column="1" Margin="5" HeadersVisibility="None" Name="dataGrid_SellPreview" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="Cell" ItemsSource="{Binding}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="100" Binding="{Binding Name}" />
                             <DataGridTextColumn Width="80" Binding="{Binding Note}">
@@ -151,7 +151,7 @@
                     <Button Grid.Row="1" Grid.Column="1" Margin="5" Name="button_Sell" IsEnabled="False" Foreground="White" FontWeight="Bold" Background="Blue" Click="Button_Sell_Click">SELL</Button>
                 </Grid>
             </TabItem>
-            <TabItem Name="tabItem_position" Header="建玉">
+            <TabItem Name="tabItem_position" Header="建玉" Height="22" VerticalAlignment="Top">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />

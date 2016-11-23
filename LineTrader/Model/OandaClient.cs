@@ -4,10 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-namespace LineTrader.Oanda
+namespace LineTrader.Model.Oanda
 {
     public class RestClient : IDisposable
     {
@@ -85,46 +86,39 @@ namespace LineTrader.Oanda
 
         private static IObservable<T> StreamResponse<T>(Task<HttpResponseMessage> response, Func<string, T> f)
         {
-            return Observable.Create<T>(observer =>
+            var subject = new Subject<T>();
+            response.ContinueWith(s =>
             {
-                response.ContinueWith(s =>
+                var result = s.Result;
+                if (result.StatusCode == HttpStatusCode.OK)
                 {
-                    var result = s.Result;
-                    if (result.StatusCode == HttpStatusCode.OK)
+                    var stream = result.Content.ReadAsStreamAsync().Result;
+                    var reader = new StreamReader(stream);
+                    while (true)
                     {
-                        var stream = result.Content.ReadAsStreamAsync().Result;
-                        var reader = new StreamReader(stream);
-                        while (true)
+                        string line;
+                        try
                         {
-                            string line;
-                            try
-                            {
-                                line = reader.ReadLine();
-                            }
-                            catch (IOException)
-                            {
-                                break;
-                            }
-                            var x = f(line);
-                            if (x != null)
-                            {
-                                observer.OnNext(x);
-                            }
+                            line = reader.ReadLine();
                         }
-                        observer.OnCompleted();
+                        catch (IOException)
+                        {
+                            break;
+                        }
+                        var x = f(line);
+                        if (x != null)
+                        {
+                            subject.OnNext(x);
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("{0} - {1} {2}", result.RequestMessage.RequestUri, result.StatusCode, result.Content.ReadAsStringAsync().Result);
-                        //observer.OnError(new Exception());
-                        observer.OnCompleted();
-                    }
-                });
-                return () =>
+                }
+                else
                 {
-                    response.Dispose();
-                };
+                    Console.WriteLine("{0} - {1} {2}", result.RequestMessage.RequestUri, result.StatusCode, result.Content.ReadAsStringAsync().Result);
+                    //subject.OnError(new Exception());
+                }
             });
+            return subject;
         }
     }
 }

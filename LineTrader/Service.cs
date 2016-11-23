@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace LineTrader
 {
@@ -90,25 +92,30 @@ namespace LineTrader
             });
         }
 
-        public bool Apply(MT4.Command c)
+        public HttpStatusCode Apply(MT4.Command c)
         {
             var instrument = GetInstrument(c.Instrument);
             if ((instrument == null || instrument.Charts.Count == 0) && c.operation != "init")
             {
-                return false;
+                return HttpStatusCode.PreconditionFailed;
             }
-            if (instrument == null &&  c.operation == "init")
+            Task.Run(() =>
             {
-                var newInstrument = new Instrument(c);
-                this.instruments[c.Instrument] = newInstrument;
-                this.instrumentUpdated.OnNext(newInstrument);
-                UpdateOrderPreview();
-                return true;
-            }
-            instrument.Apply(c);
-            this.instrumentUpdated.OnNext(instrument);
-            UpdateOrderPreview();
-            return true;
+                if (instrument == null && c.operation == "init")
+                {
+                    var newInstrument = new Instrument(c);
+                    this.instruments[c.Instrument] = newInstrument;
+                    this.instrumentUpdated.OnNext(newInstrument);
+                    UpdateOrderPreview();
+                }
+                else
+                {
+                    instrument.Apply(c);
+                    this.instrumentUpdated.OnNext(instrument);
+                    UpdateOrderPreview();
+                }
+            });
+            return HttpStatusCode.OK;
         }
 
         public void SetInstrument(string instrument)

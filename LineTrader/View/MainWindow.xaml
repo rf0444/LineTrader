@@ -196,7 +196,19 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="約定価格" Width="60" Binding="{Binding Price}" IsReadOnly="True">
+                            <DataGridTextColumn Header="建値" Width="60" Binding="{Binding Price}" IsReadOnly="True">
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="現値" Width="60" Binding="{Binding Current}" IsReadOnly="True">
                                 <DataGridTextColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="HorizontalContentAlignment" Value="Right"/>

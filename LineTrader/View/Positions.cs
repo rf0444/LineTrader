@@ -43,9 +43,7 @@ namespace LineTrader.View
 
         public Positions()
         {
-            this.Items = new ObservableSortedList<object, Position>(p =>
-                Tuple.Create(Math.Min(p.StopLossRemain ?? decimal.MaxValue, p.TakeProfitRemain ?? decimal.MaxValue), p.Id)
-            );
+            this.Items = new ObservableSortedList<object, Position>(p => p.Id);
             this.dict = new Dictionary<long, Position>();
         }
 

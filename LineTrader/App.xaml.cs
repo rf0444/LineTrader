@@ -10,8 +10,6 @@ namespace LineTrader
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // TODO: たまに起動しないことがある
-            Console.WriteLine("Start");
             var settings = LineTrader.Properties.Settings.Default;
             if (settings.AccountToken == "" || settings.AccountId == 0)
             {
@@ -23,19 +21,12 @@ namespace LineTrader
                 this.Shutdown();
                 return;
             }
-            Console.WriteLine("create client");
             var restClient = new Model.Oanda.RestClient(settings.Practice, settings.AccountToken, settings.AccountId);
-            Console.WriteLine("create service");
             var service = new Model.Service(restClient, settings.Instruments.Split(','));
-            Console.WriteLine("create mt4 server");
-            var mt4Server = new MT4Server(service);
-            Console.WriteLine("create window");
             var win = new View.MainWindow(service, settings.DefalutSizeValue);
-            Console.WriteLine("start mt4 server");
-            mt4Server.Start();
-            Console.WriteLine("start window");
             win.Show();
-            Console.WriteLine("Started");
+            var mt4Server = new MT4Server(service);
+            mt4Server.Start();
         }
     }
 }

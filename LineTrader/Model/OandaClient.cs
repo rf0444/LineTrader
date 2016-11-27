@@ -30,7 +30,7 @@ namespace LineTrader.Model.Oanda
             return res.ContinueWith(s =>
             {
                 return new JavaScriptSerializer().Deserialize<Account>(s.Result);
-            });
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         public IObservable<Price> GetPriceStream(string[] instruments)
@@ -51,7 +51,7 @@ namespace LineTrader.Model.Oanda
         public Task<string> SendOrder(Order order)
         {
             var res = http.PostAsync("https://api-" + this.hostBase + "/v1/accounts/" + this.accountId + "/orders", new FormUrlEncodedContent(order.ToDictionary()));
-            return res.ContinueWith(s => s.Result.Content.ReadAsStringAsync().Result);
+            return res.ContinueWith(s => s.Result.Content.ReadAsStringAsync().Result, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         public IObservable<Transaction> GetEventStream()
@@ -71,7 +71,7 @@ namespace LineTrader.Model.Oanda
             {
                 var serializer = new JavaScriptSerializer();
                 return serializer.Deserialize<Positions>(s.Result).trades;
-            });
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         public Task ClosePosition(long id)
@@ -89,6 +89,12 @@ namespace LineTrader.Model.Oanda
             var subject = new Subject<T>();
             response.ContinueWith(s =>
             {
+                if (s.Exception != null)
+                {
+                    subject.OnError(s.Exception);
+                    subject.OnCompleted();
+                    return;
+                }
                 var result = s.Result;
                 if (result.StatusCode == HttpStatusCode.OK)
                 {

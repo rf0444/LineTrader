@@ -5,15 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LineTrader"
         mc:Ignorable="d"
-        Title="Line Trader"
+        Title="LineTrader"
         Topmost="True"
         Height="600" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="280" />
         </Grid.RowDefinitions>
-        <TabControl Name="tabControl_price" Grid.Row="0">
+        <Menu Grid.Row="0">
+            <MenuItem Header="設定">
+                <MenuItem Header="アカウント設定" Click="menuItem_AccountSetting_Click" />
+            </MenuItem>
+        </Menu>
+        <TabControl Name="tabControl_price" Grid.Row="1">
             <TabItem Name="tabItem_price" Header="価格">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -42,7 +48,7 @@
                                 </DataGridTemplateColumn.HeaderStyle>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding Buy, Mode=TwoWay}" IsEnabled="{Binding Selectable}" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="CheckBox_Buy_Changed" Unchecked="CheckBox_Buy_Changed"/>
+                                        <CheckBox IsChecked="{Binding Buy, Mode=TwoWay}" IsEnabled="{Binding Selectable}" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="checkBox_Buy_Changed" Unchecked="checkBox_Buy_Changed"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -54,7 +60,7 @@
                                 </DataGridTemplateColumn.HeaderStyle>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding Sell, Mode=TwoWay}" IsEnabled="{Binding Selectable}" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="CheckBox_Sell_Changed" Unchecked="CheckBox_Sell_Changed"/>
+                                        <CheckBox IsChecked="{Binding Sell, Mode=TwoWay}" IsEnabled="{Binding Selectable}" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="checkBox_Sell_Changed" Unchecked="checkBox_Sell_Changed"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -96,7 +102,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TabControl Name="tabControl_order" Grid.Row="1" SelectionChanged="tabControl_order_SelectionChanged">
+        <TabControl Name="tabControl_order" Grid.Row="2" SelectionChanged="tabControl_order_SelectionChanged">
             <TabItem Name="tabItem_order" Header="注文">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -147,8 +153,8 @@
                             <DataGridTextColumn Width="36" Binding="{Binding Unit}" />
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button Grid.Row="1" Grid.Column="0" Margin="5" Name="button_Buy" IsEnabled="False" Foreground="White" FontWeight="Bold" Background="Red" Click="Button_Buy_Click">BUY</Button>
-                    <Button Grid.Row="1" Grid.Column="1" Margin="5" Name="button_Sell" IsEnabled="False" Foreground="White" FontWeight="Bold" Background="Blue" Click="Button_Sell_Click">SELL</Button>
+                    <Button Grid.Row="1" Grid.Column="0" Margin="5" Name="button_Buy" IsEnabled="False" Foreground="White" FontWeight="Bold" Background="Red" Click="button_Buy_Click">BUY</Button>
+                    <Button Grid.Row="1" Grid.Column="1" Margin="5" Name="button_Sell" IsEnabled="False" Foreground="White" FontWeight="Bold" Background="Blue" Click="button_Sell_Click">SELL</Button>
                 </Grid>
             </TabItem>
             <TabItem Name="tabItem_position" Header="建玉" Height="22" VerticalAlignment="Top">

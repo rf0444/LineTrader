@@ -145,7 +145,7 @@ namespace LineTrader.View
             this.instrumentSelected.OnNext(selected);
         }
 
-        private void CheckBox_Buy_Changed(object sender, RoutedEventArgs e)
+        private void checkBox_Buy_Changed(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
             var ctx = c.DataContext as Line;
@@ -153,7 +153,7 @@ namespace LineTrader.View
             this.lines[this.selectedInstrument.Value].Items.NotifyReplaced(ctx);
         }
 
-        private void CheckBox_Sell_Changed(object sender, RoutedEventArgs e)
+        private void checkBox_Sell_Changed(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
             var ctx = c.DataContext as Line;
@@ -161,7 +161,7 @@ namespace LineTrader.View
             this.lines[this.selectedInstrument.Value].Items.NotifyReplaced(ctx);
         }
 
-        private void Button_Buy_Click(object sender, RoutedEventArgs e)
+        private void button_Buy_Click(object sender, RoutedEventArgs e)
         {
             if (this.buyOrder == null)
             {
@@ -178,7 +178,7 @@ namespace LineTrader.View
             this.tabItem_position.IsSelected = true;
         }
 
-        private void Button_Sell_Click(object sender, RoutedEventArgs e)
+        private void button_Sell_Click(object sender, RoutedEventArgs e)
         {
             if (this.sellOrder == null)
             {
@@ -281,6 +281,24 @@ namespace LineTrader.View
                     this.dataGrid_Positions.Focus();
                 }
             });
+        }
+
+        private void menuItem_AccountSetting_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new AccountSettingWindow(false);
+            win.AccountUpdated += _ =>
+            {
+                // TODO: 即時有効にしたい
+                MessageBox.Show(
+                    "新しいアカウント設定は次回起動から有効になります。",
+                    "LineTrader",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.None,
+                    MessageBoxOptions.DefaultDesktopOnly
+                );
+            };
+            win.ShowDialog();
         }
     }
 }

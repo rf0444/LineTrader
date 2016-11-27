@@ -124,9 +124,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Model\Service.cs" />
+    <Compile Include="View\AccountSettingWindow.xaml.cs">
+      <DependentUpon>AccountSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Line.cs" />
     <Compile Include="View\OrderPreview.cs" />
     <Compile Include="View\Positions.cs" />
+    <Page Include="View\AccountSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

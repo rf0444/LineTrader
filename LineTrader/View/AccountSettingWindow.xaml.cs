@@ -13,7 +13,7 @@ namespace LineTrader.View
         private bool isInitSetting;
         private Task accountTask;
 
-        public delegate void AccountUpdatedHandler(Model.Oanda.Account account);
+        public delegate void AccountUpdatedHandler(Model.Oanda.Account account, Model.Oanda.RestClient client);
         public event AccountUpdatedHandler AccountUpdated;
 
         public AccountSettingWindow(bool isInitSetting)
@@ -59,7 +59,7 @@ namespace LineTrader.View
                     settings.AccountId = accountId;
                     settings.AccountToken = token;
                     settings.Save();
-                    AccountUpdated?.Invoke(s.Result);
+                    AccountUpdated?.Invoke(s.Result, client);
                     Dispatcher.Invoke(() => this.Close());
                 }
             });

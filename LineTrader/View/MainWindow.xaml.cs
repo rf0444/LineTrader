@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -55,20 +56,27 @@ namespace LineTrader.View
                 sampling.Subscribe(_ =>
                 {
                     var current = instrument.CurrentLine.Value;
-                    Dispatcher.Invoke(() =>
+                    try
                     {
-                        var focused = this.dataGrid_Lines.IsKeyboardFocusWithin;
-                        var selected = this.dataGrid_Lines.SelectedItem as Line;
-                        lines.Current = (current == null) ? null : new Line(current);
-                        if (instrument.Name == this.selectedInstrument.Value)
+                        Dispatcher.Invoke(() =>
                         {
-                            this.dataGrid_Lines.SelectedItem = lines[selected?.Identity];
-                        }
-                        if (focused)
-                        {
-                            this.dataGrid_Lines.Focus();
-                        }
-                    });
+                            var focused = this.dataGrid_Lines.IsKeyboardFocusWithin;
+                            var selected = this.dataGrid_Lines.SelectedItem as Line;
+                            lines.Current = (current == null) ? null : new Line(current);
+                            if (instrument.Name == this.selectedInstrument.Value)
+                            {
+                                this.dataGrid_Lines.SelectedItem = lines[selected?.Identity];
+                            }
+                            if (focused)
+                            {
+                                this.dataGrid_Lines.Focus();
+                            }
+                        });
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // do nothing
+                    }
                 });
                 instrument.ChartLines.Subscribe(charts =>
                 {
@@ -286,7 +294,7 @@ namespace LineTrader.View
         private void menuItem_AccountSetting_Click(object sender, RoutedEventArgs e)
         {
             var win = new AccountSettingWindow(false);
-            win.AccountUpdated += _ =>
+            win.AccountUpdated += (account, clinet) =>
             {
                 // TODO: 即時有効にしたい
                 MessageBox.Show(

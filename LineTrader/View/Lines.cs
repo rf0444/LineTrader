@@ -78,7 +78,7 @@ namespace LineTrader.View
                     {
                         var key = Line.ToIdentity(chartId, line.name);
                         var old = this.chartLines.ContainsKey(key) ? this.chartLines[key] : null;
-                        newChartLines.Add(key, new Line(chartId, line, this.Current?.Spread, old));
+                        newChartLines[key] = new Line(chartId, line, this.Current?.Spread, old);
                     }
                 }
             }

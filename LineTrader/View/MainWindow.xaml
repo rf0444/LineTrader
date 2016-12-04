@@ -19,6 +19,11 @@
                 <MenuItem Header="アカウント設定" Click="menuItem_AccountSetting_Click" />
                 <MenuItem Header="リスク設定" Click="menuItem_RiskSetting_Click" />
             </MenuItem>
+            <MenuItem Header="表示">
+                  <MenuItem Header="HT" IsCheckable="True" IsChecked="True" Name="viewCheck_HT" Checked="viewCheck_Updated" Unchecked="viewCheck_Updated" />
+                <MenuItem Header="水平線" IsCheckable="True" IsChecked="True" Name="viewCheck_HorizontalLine" Checked="viewCheck_Updated" Unchecked="viewCheck_Updated" />
+                <MenuItem Header="トレンドライン" IsCheckable="True" IsChecked="True" Name="viewCheck_TrendLine" Checked="viewCheck_Updated" Unchecked="viewCheck_Updated" />
+            </MenuItem>
         </Menu>
         <TabControl Name="tabControl_price" Grid.Row="1">
             <TabItem Name="tabItem_price" Header="価格">

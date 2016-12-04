@@ -2,12 +2,14 @@
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace LineTrader.View
 {
@@ -18,6 +20,9 @@ namespace LineTrader.View
     {
         private RiskSetting riskSetting;
         private Model.Service service;
+
+        private Subject<object> viewCheckUpdated;
+
         private Subject<string> instrumentSelected;
         private ReadOnlyReactiveProperty<string> selectedInstrument;
 
@@ -38,6 +43,9 @@ namespace LineTrader.View
 
             this.riskSetting = RiskSetting.Default;
             this.service = service;
+
+            this.viewCheckUpdated = new Subject<object>();
+
             this.instrumentSelected = new Subject<string>();
             this.selectedInstrument = this.instrumentSelected.ToReadOnlyReactiveProperty();
 
@@ -98,7 +106,7 @@ namespace LineTrader.View
                 this.lines.Add(instrument.Name, lines);
             }
             this.dataGrid_Lines.DataContext = this.instrumentSelected
-                .Select(name => (name == null) ? null : this.lines[name].Items)
+                .Select(_ => this.ListItems)
                 .Do(_ =>
                 {
                     var current = this.lines[this.selectedInstrument.Value].Current;
@@ -109,6 +117,7 @@ namespace LineTrader.View
                     this.dataGrid_Lines.SelectedItem = current;
                     this.dataGrid_Lines.Focus();
                 })
+                .Merge(this.viewCheckUpdated.Select(_ => this.ListItems))
                 .ToReadOnlyReactiveProperty()
             ;
 
@@ -151,7 +160,7 @@ namespace LineTrader.View
             {
                 return;
             }
-            this.instrumentSelected.OnNext(selected);
+            this.instrumentSelected?.OnNext(selected);
         }
 
         private void checkBox_Buy_Changed(object sender, RoutedEventArgs e)
@@ -206,7 +215,7 @@ namespace LineTrader.View
 
         private void tabControl_order_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.orderTabSelected.OnNext(this.tabControl_order.SelectedIndex);
+            this.orderTabSelected?.OnNext(this.tabControl_order.SelectedIndex);
         }
 
         private void dataGrid_Positions_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -219,6 +228,46 @@ namespace LineTrader.View
         {
             var selecteds = Enumerable.Cast<Position>(this.dataGrid_Positions.SelectedItems).Select(x => x.Id);
             this.service.ClosePositions(selecteds);
+        }
+
+        private ICollectionView ListItems
+        {
+            get
+            {
+                var name = this.selectedInstrument.Value;
+                if (name == null || !this.lines.ContainsKey(name))
+                {
+                    return null;
+                }
+                var items = this.lines[name].Items;
+                var source = CollectionViewSource.GetDefaultView(items);
+                source.Filter = x => IsVisibleLine(x as Line);
+                return source;
+            }
+        }
+
+        private bool IsVisibleLine(Line x)
+        {
+            if (x == null)
+            {
+                return false;
+            }
+            var isHT = x.Name.StartsWith("HT_");
+            var isHorizontalLine = x.Selectable && x.Start == null && x.End == null;
+            var isTrendLine = (x.Start != null || x.End != null) && !isHT;
+            if (!this.viewCheck_HT.IsChecked && isHT)
+            {
+                return false;
+            }
+            if (!this.viewCheck_HorizontalLine.IsChecked && isHorizontalLine)
+            {
+                return false;
+            }
+            if (!this.viewCheck_TrendLine.IsChecked && isTrendLine)
+            {
+                return false;
+            }
+            return true;
         }
 
         private void UpdateOrderPerview()
@@ -327,6 +376,11 @@ namespace LineTrader.View
             {
                 this.button_Close.Visibility = this.riskSetting.ManualClose ? Visibility.Visible : Visibility.Collapsed;
             });
+        }
+
+        private void viewCheck_Updated(object sender, RoutedEventArgs e)
+        {
+            this.viewCheckUpdated?.OnNext(null);
         }
     }
 }

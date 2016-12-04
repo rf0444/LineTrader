@@ -19,6 +19,13 @@ namespace LineTrader.Util
             this.items = new SortedList<K, V>();
         }
 
+        public ObservableSortedList(ObservableSortedList<K, V> that)
+        {
+            this.orderBy = that.orderBy;
+            this.items = that.items;
+            this.CollectionChanged = that.CollectionChanged;
+        }
+
         public int Count
         {
             get
@@ -141,13 +148,18 @@ namespace LineTrader.Util
 
         public void Set(IEnumerable<V> items)
         {
+            SetWithoutNotify(items);
+            NotifyReset();
+        }
+
+        public void SetWithoutNotify(IEnumerable<V> items)
+        {
             this.items = new SortedList<K, V>();
             foreach (var x in items.OrderBy(x => this.orderBy(x)))
             {
                 var key = this.orderBy(x);
                 this.items.Add(key, x);
             }
-            NotifyReset();
         }
 
         public void NotifyAdded(V item)

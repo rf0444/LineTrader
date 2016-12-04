@@ -115,6 +115,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\Instrument.cs" />
+    <Compile Include="Model\RiskType.cs" />
     <Compile Include="MT4Server.cs" />
     <Compile Include="Model\OandaClient.cs" />
     <Compile Include="Model\OrderSide.cs" />
@@ -124,6 +125,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Model\Service.cs" />
+    <Compile Include="View\RiskSetting.cs" />
+    <Compile Include="View\RiskSettingWindow.xaml.cs">
+      <DependentUpon>RiskSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="View\AccountSettingWindow.xaml.cs">
       <DependentUpon>AccountSettingWindow.xaml</DependentUpon>
@@ -131,6 +136,10 @@
     <Compile Include="View\Line.cs" />
     <Compile Include="View\OrderPreview.cs" />
     <Compile Include="View\Positions.cs" />
+    <Page Include="View\RiskSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AccountSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

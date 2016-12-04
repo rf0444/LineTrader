@@ -18,11 +18,10 @@ namespace LineTrader.View
         public decimal? TakeProfit { get { return Mt4TakeProfit + OrderPriceDifference; } }
         public decimal? TakeProfitWidth { get { return Model.OrderSides.Direction(Side) * (TakeProfit - OrderPrice); } }
         public decimal? RiskRewardRatio { get { return (StopLossWidth == 0) ? null : TakeProfitWidth / StopLossWidth; } }
-
-        public decimal OrderRiskRatio { get; set; }
-        public decimal? AccountAvail { get; set; }
-        public string AccountCurrency { get; set; }
-        public decimal? OrderRiskAccountCurrency { get { return AccountAvail * OrderRiskRatio; } }
+        public Model.Oanda.Account Account { get; set; }
+        public Model.RiskType RiskType { get; set; }
+        public decimal RiskValue { get; set; }
+        public decimal? OrderRiskAccountCurrency { get { return RiskType.Risk(Account, RiskValue); } }
         public decimal? CurrencyRate { get; set; }
         public decimal? OrderRiskBaseCurrency { get { return OrderRiskAccountCurrency * CurrencyRate; } }
         public int OrderSize { get { return (StopLossWidth == 0) ? 0 : decimal.ToInt32((OrderRiskBaseCurrency / StopLossWidth) ?? 0); } }
@@ -57,11 +56,7 @@ namespace LineTrader.View
             this.StopLossWidth = new OrderPreviewRecord { Name = "損切幅" };
             this.TakeProfitWidth = new OrderPreviewRecord { Name = "利確幅" };
             this.RiskRewardRatio = new OrderPreviewRecord { Name = "損益率" };
-            this.RiskRatio = new OrderPreviewRecord {
-                Name = "許容リスク",
-                Note = "余剰証拠金の",
-                Unit = "%",
-            };
+            this.RiskRatio = new OrderPreviewRecord { Name = "許容リスク" };
             this.RiskAtAccountCurrency = new OrderPreviewRecord { };
             this.RiskAtBaseCurrency = new OrderPreviewRecord { };
             this.OrderSize = new OrderPreviewRecord { Name = "注文サイズ", Unit = "通貨" };
@@ -93,11 +88,13 @@ namespace LineTrader.View
             this.TakeProfitWidth.Value = order.TakeProfitWidth?.ToString();
             this.TakeProfitWidth.Unit = order.BaseCurrency;
             this.RiskRewardRatio.Value = order.RiskRewardRatio?.ToString("0.0000");
-            this.RiskRatio.Value = (order.OrderRiskRatio * 100).ToString("G29");
-            this.RiskAtAccountCurrency.Value = order.OrderRiskAccountCurrency?.ToString("0.0000");
-            this.RiskAtAccountCurrency.Unit = order.AccountCurrency;
-            this.RiskAtBaseCurrency.Value = (order.AccountCurrency == order.BaseCurrency) ? "" : order.OrderRiskBaseCurrency?.ToString("0.0000");
-            this.RiskAtBaseCurrency.Unit = (order.AccountCurrency == order.BaseCurrency) ? "" : order.BaseCurrency;
+            this.RiskRatio.Note = order.RiskType.Name;
+            this.RiskRatio.Value = order.RiskValue.ToString("G29");
+            this.RiskRatio.Unit = order.RiskType.Unit(order.Account);
+            this.RiskAtAccountCurrency.Value = (order.RiskType == Model.RiskType.Fixed) ? "" : order.OrderRiskAccountCurrency?.ToString("0.0000");
+            this.RiskAtAccountCurrency.Unit = (order.RiskType == Model.RiskType.Fixed) ? "" : order.Account?.accountCurrency;
+            this.RiskAtBaseCurrency.Value = (order.Account?.accountCurrency == order.BaseCurrency) ? "" : order.OrderRiskBaseCurrency?.ToString("0.0000");
+            this.RiskAtBaseCurrency.Unit = (order.Account?.accountCurrency == order.BaseCurrency) ? "" : order.BaseCurrency;
             this.OrderSize.Value = order.OrderSize.ToString();
             this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }

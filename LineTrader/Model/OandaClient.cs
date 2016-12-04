@@ -24,6 +24,8 @@ namespace LineTrader.Model.Oanda
             this.hostBase = isPractice ? "fxpractice.oanda.com" : "fxtrade.oanda.com";
         }
 
+        // TODO: エラー時の再送処理
+
         public Task<Account> GetAccount()
         {
             var res = http.GetStringAsync("https://api-" + this.hostBase + "/v1/accounts/" + this.accountId);

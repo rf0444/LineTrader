@@ -20,5 +20,8 @@
     <Setting Name="Instruments" Type="System.String" Scope="User">
       <Value Profile="(Default)">USD/JPY,EUR/JPY,EUR/USD</Value>
     </Setting>
+    <Setting Name="ManualClose" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

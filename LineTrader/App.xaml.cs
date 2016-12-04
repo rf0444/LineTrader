@@ -35,7 +35,7 @@ namespace LineTrader
         private void StartApplication(LineTrader.Properties.Settings settings, Model.Oanda.RestClient restClient)
         {
             var service = new Model.Service(restClient, settings.Instruments.Split(','));
-            var win = new View.MainWindow(service, settings.DefalutSizeValue);
+            var win = new View.MainWindow(service);
             win.Show();
             var mt4Server = new MT4Server(service);
             mt4Server.Start();

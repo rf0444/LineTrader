@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 
 namespace LineTrader.View
@@ -59,7 +57,7 @@ namespace LineTrader.View
                     settings.AccountId = accountId;
                     settings.AccountToken = token;
                     settings.Save();
-                    AccountUpdated?.Invoke(s.Result, client);
+                    this.AccountUpdated?.Invoke(s.Result, client);
                     Dispatcher.Invoke(() => this.Close());
                 }
             });

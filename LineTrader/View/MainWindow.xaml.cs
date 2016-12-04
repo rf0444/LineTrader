@@ -16,7 +16,7 @@ namespace LineTrader.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        private decimal riskRatio;
+        private RiskSetting riskSetting;
         private Model.Service service;
         private Subject<string> instrumentSelected;
         private ReadOnlyReactiveProperty<string> selectedInstrument;
@@ -32,11 +32,11 @@ namespace LineTrader.View
         private OrderPreviewRecords sellPreview;
         private Positions positions;
 
-        public MainWindow(Model.Service service, decimal riskRatio)
+        public MainWindow(Model.Service service)
         {
             InitializeComponent();
 
-            this.riskRatio = riskRatio;
+            this.riskSetting = RiskSetting.Default;
             this.service = service;
             this.instrumentSelected = new Subject<string>();
             this.selectedInstrument = this.instrumentSelected.ToReadOnlyReactiveProperty();
@@ -141,6 +141,7 @@ namespace LineTrader.View
                 .Where(_ => this.selectedOrderTab.Value == 1)
                 .Subscribe(_ => UpdatePositions())
             ;
+            UpdateCloseButtonVisiblity();
         }
 
         private void listView_Instruments_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -236,9 +237,9 @@ namespace LineTrader.View
                 Mt4Price = lines?.Current?.Ask,
                 Mt4StopLoss = lines?.StopLossBuy?.Bid,
                 Mt4TakeProfit = lines?.TakeProfitBuy?.Bid,
-                OrderRiskRatio = this.riskRatio / 100,
-                AccountCurrency = account?.accountCurrency,
-                AccountAvail = account?.marginAvail,
+                Account = account,
+                RiskType = this.riskSetting.Type,
+                RiskValue = this.riskSetting.Value,
                 CurrencyRate = this.service.Transrate(1, account?.accountCurrency, instrument?.BaseCurrency),
             };
             this.sellOrder = new OrderPreview
@@ -250,9 +251,9 @@ namespace LineTrader.View
                 Mt4Price = lines?.Current?.Bid,
                 Mt4StopLoss = lines?.StopLossSell?.Ask,
                 Mt4TakeProfit = lines?.TakeProfitSell?.Ask,
-                OrderRiskRatio = this.riskRatio / 100,
-                AccountCurrency = account?.accountCurrency,
-                AccountAvail = account?.marginAvail,
+                Account = account,
+                RiskType = this.riskSetting.Type,
+                RiskValue = this.riskSetting.Value,
                 CurrencyRate = this.service.Transrate(1, account?.accountCurrency, instrument?.BaseCurrency),
             };
             Dispatcher.Invoke(() =>
@@ -296,7 +297,6 @@ namespace LineTrader.View
             var win = new AccountSettingWindow(false);
             win.AccountUpdated += (account, clinet) =>
             {
-                // TODO: 即時有効にしたい
                 MessageBox.Show(
                     "新しいアカウント設定は次回起動から有効になります。",
                     "LineTrader",
@@ -307,6 +307,26 @@ namespace LineTrader.View
                 );
             };
             win.ShowDialog();
+        }
+
+        private void menuItem_RiskSetting_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new RiskSettingWindow(this.riskSetting, this.service.Account.Value);
+            win.RiskUpdated += setting =>
+            {
+                this.riskSetting = setting;
+                UpdateOrderPerview();
+                UpdateCloseButtonVisiblity();
+            };
+            win.ShowDialog();
+        }
+
+        public void UpdateCloseButtonVisiblity()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                this.button_Close.Visibility = this.riskSetting.ManualClose ? Visibility.Visible : Visibility.Collapsed;
+            });
         }
     }
 }

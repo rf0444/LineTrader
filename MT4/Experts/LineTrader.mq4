@@ -15,6 +15,7 @@ void OnDeinit(const int reason) {
 
 double prev_ask = 0;
 double prev_bid = 0;
+string prev_lines = "";
 
 void OnTick() {
   if (prev_ask == Ask && prev_bid == Bid) {
@@ -26,7 +27,11 @@ void OnTick() {
 }
 void OnChartEvent(const int id, const long &lparam, const double &dparam, const string &sparam) {
   if (chart_object_changed(id)) {
-    send_to_server(line_changed_data());
+    string data = lines();
+    if (prev_lines != data) {
+      prev_lines = data;
+      send_to_server(line_changed_data(data));
+    }
   }
 }
 
@@ -53,15 +58,17 @@ int send_to_server(string data) {
 }
 
 string init_data() {
-  return StringFormat("{\"symbol\":\"%s\",\"chart\":%lld,\"operation\":\"init\",\"price\":%s,\"lines\":%s}", Symbol(), ChartID(), price(), lines());
+  string line_data = lines();
+  prev_lines = line_data;
+  return StringFormat("{\"symbol\":\"%s\",\"chart\":%lld,\"operation\":\"init\",\"price\":%s,\"lines\":%s}", Symbol(), ChartID(), price(), line_data);
 }
 string tick_data() {
   return StringFormat("{\"symbol\":\"%s\",\"chart\":%lld,\"operation\":\"tick\",\"price\":%s}", Symbol(), ChartID(), price());
 }
 
 
-string line_changed_data() {
-  return StringFormat("{\"symbol\":\"%s\",\"chart\":%lld,\"operation\":\"line\",\"lines\":%s}", Symbol(), ChartID(), lines());
+string line_changed_data(string lines) {
+  return StringFormat("{\"symbol\":\"%s\",\"chart\":%lld,\"operation\":\"line\",\"lines\":%s}", Symbol(), ChartID(), lines);
 }
 string close_data() {
   return StringFormat("{\"symbol\":\"%s\",\"chart\":%lld,\"operation\":\"close\"}", Symbol(), ChartID());
@@ -102,9 +109,14 @@ string lines() {
       string desc = ObjectGetString(ChartID(), name, OBJPROP_TEXT);
       double price1 = ObjectGetDouble(ChartID(), name, OBJPROP_PRICE1);
       double price2 = ObjectGetDouble(ChartID(), name, OBJPROP_PRICE2);
+      datetime time1 = utc_time(ObjectGetInteger(ChartID(), name, OBJPROP_TIME1));
+      datetime time2 = utc_time(ObjectGetInteger(ChartID(), name, OBJPROP_TIME2));
       if (price1 == price2) {
         long clr = ObjectGetInteger(ChartID(), name, OBJPROP_COLOR);
-        string line = StringFormat("{\"name\":\"%s\",\"price\":%s,\"color\":%d,\"description\":\"%s\"},", name, DoubleToString(price1, Digits), clr, desc);
+        string line = StringFormat(
+          "{\"name\":\"%s\",\"price\":%s,\"color\":%d,\"description\":\"%s\",\"start\":%d,\"end\":%d},",
+          name, DoubleToString(price1, Digits), clr, desc, time1, time2
+        );
         StringAdd(ls, line);
       }
       break;

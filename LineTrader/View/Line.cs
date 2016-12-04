@@ -24,6 +24,8 @@ namespace LineTrader.View
         public string Name { get; }
         public string Description { get; }
         public string Color { get; }
+        public string Start { get; }
+        public string End { get; }
         public object Identity { get { return ToIdentity(ChartId, Name); } }
 
         public Line(long chartId, Model.MT4.Line line, decimal? spread, Line old)
@@ -37,6 +39,8 @@ namespace LineTrader.View
             this.Sell = old?.Sell ?? false;
             this.Bid = line.price;
             this.Ask = line.price + (spread ?? 0);
+            this.Start = line.StartDateTime?.ToString();
+            this.End = line.EndDateTime?.ToString();
         }
 
         public Line(Model.MT4.Price price)

@@ -89,8 +89,6 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Description" Width="2*" Binding="{Binding Description}" IsReadOnly="True" />
                             <DataGridTextColumn Header="" Width="30" IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
@@ -98,6 +96,10 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
+                            <DataGridTextColumn Header="Name" Width="160" Binding="{Binding Name}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Start" Width="120" Binding="{Binding Start}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="End" Width="120" Binding="{Binding End}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Description" Width="320" Binding="{Binding Description}" IsReadOnly="True" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

@@ -24,11 +24,35 @@ namespace LineTrader.Model.MT4
         public string description { get; set; }
         public decimal price { get; set; }
         public int color { get; set; }
+        public long? start { get; set; }
+        public long? end { get; set; }
         public string ColorString
         {
             get
             {
                 return String.Format("#{0:x2}{1:x2}{2:x2}", color % 256, color / 256 % 256, color / 256 / 256 % 256);
+            }
+        }
+        public DateTime? StartDateTime
+        {
+            get
+            {
+                if (start == null)
+                {
+                    return null;
+                }
+                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(start ?? 0).ToLocalTime();
+            }
+        }
+        public DateTime? EndDateTime
+        {
+            get
+            {
+                if (end == null)
+                {
+                    return null;
+                }
+                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(end ?? 0).ToLocalTime();
             }
         }
     }

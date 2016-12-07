@@ -24,8 +24,8 @@ namespace LineTrader.Model.MT4
         public string description { get; set; }
         public decimal price { get; set; }
         public int color { get; set; }
-        public long? start { get; set; }
-        public long? end { get; set; }
+        public string start { get; set; }
+        public string end { get; set; }
         public string ColorString
         {
             get
@@ -41,7 +41,7 @@ namespace LineTrader.Model.MT4
                 {
                     return null;
                 }
-                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(start ?? 0).ToLocalTime();
+                return TimeZoneInfo.ConvertTime(DateTime.Parse(start), ChartTimeZone, TimeZoneInfo.Local);
             }
         }
         public DateTime? EndDateTime
@@ -52,9 +52,10 @@ namespace LineTrader.Model.MT4
                 {
                     return null;
                 }
-                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(end ?? 0).ToLocalTime();
+                return DateTime.Parse(end);
             }
         }
+        public readonly TimeZoneInfo ChartTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
     }
 
     public class Price
@@ -77,5 +78,4 @@ namespace LineTrader.Model.MT4
             }
         }
     }
-
 }

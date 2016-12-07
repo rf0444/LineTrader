@@ -39,8 +39,8 @@ namespace LineTrader.View
             this.Sell = old?.Sell ?? false;
             this.Bid = line.price;
             this.Ask = line.price + (spread ?? 0);
-            this.Start = line.StartDateTime?.ToString();
-            this.End = line.EndDateTime?.ToString();
+            this.Start = line.StartDateTime?.ToString("yyyy/MM/dd HH:mm:ss");
+            this.End = line.EndDateTime?.ToString("yyyy/MM/dd HH:mm:ss");
         }
 
         public Line(Model.MT4.Price price)

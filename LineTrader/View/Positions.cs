@@ -14,7 +14,7 @@ namespace LineTrader.View
         public int Units { get { return model.units; } }
         public Model.OrderSide? Side { get { return Model.OrderSides.ToOrderSide(model.side); } }
         public string Instrument { get { return model.InstrumentName; } }
-        public string DateTime { get { return model.DateTime.ToString(); } }
+        public string DateTime { get { return model.DateTime.ToString("yyyy/MM/dd HH:mm:ss"); } }
         public decimal Price { get { return model.price; } }
         public decimal? StopLoss { get { return (model.stopLoss == 0) ? (decimal?) null : model.stopLoss; } }
         public decimal? TakeProfit { get { return (model.takeProfit == 0) ? (decimal?) null : model.takeProfit; } }

@@ -109,12 +109,12 @@ string lines() {
       string desc = ObjectGetString(ChartID(), name, OBJPROP_TEXT);
       double price1 = ObjectGetDouble(ChartID(), name, OBJPROP_PRICE1);
       double price2 = ObjectGetDouble(ChartID(), name, OBJPROP_PRICE2);
-      datetime time1 = utc_time(ObjectGetInteger(ChartID(), name, OBJPROP_TIME1));
-      datetime time2 = utc_time(ObjectGetInteger(ChartID(), name, OBJPROP_TIME2));
+      string time1 = datetime_to_string(ObjectGetInteger(ChartID(), name, OBJPROP_TIME1));
+      string time2 = datetime_to_string(ObjectGetInteger(ChartID(), name, OBJPROP_TIME2));
       if (price1 == price2) {
         long clr = ObjectGetInteger(ChartID(), name, OBJPROP_COLOR);
         string line = StringFormat(
-          "{\"name\":\"%s\",\"price\":%s,\"color\":%d,\"description\":\"%s\",\"start\":%d,\"end\":%d},",
+          "{\"name\":\"%s\",\"price\":%s,\"color\":%d,\"description\":\"%s\",\"start\":\"%s\",\"end\":\"%s\"},",
           name, DoubleToString(price1, Digits), clr, desc, time1, time2
         );
         StringAdd(ls, line);
@@ -129,4 +129,10 @@ string lines() {
     ls = StringSubstr(ls, 0, StringLen(ls) - 1);
   }
   return StringConcatenate("[", ls, "]");
+}
+
+string datetime_to_string(datetime d) {
+  MqlDateTime s;
+  TimeToStruct(d, s);
+  return StringFormat("%04d/%02d/%02d %02d:%02d:%02d", s.year, s.mon, s.day, s.hour, s.min, s.sec);
 }

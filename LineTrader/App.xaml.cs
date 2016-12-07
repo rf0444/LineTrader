@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace LineTrader
 {
@@ -16,8 +17,10 @@ namespace LineTrader
                 return;
             }
             var restClient = new Model.Oanda.RestClient(settings.Practice, settings.AccountToken, settings.AccountId);
+            Console.WriteLine("get account");
             restClient.GetAccount().ContinueWith(s =>
             {
+                Console.WriteLine("got account");
                 Dispatcher.Invoke(() =>
                 {
                     if (s.IsFaulted || s.IsCanceled)
@@ -26,6 +29,7 @@ namespace LineTrader
                     }
                     else
                     {
+                        Console.WriteLine("start app");
                         StartApplication(settings, restClient);
                     }
                 });
@@ -36,9 +40,12 @@ namespace LineTrader
         {
             var service = new Model.Service(restClient, settings.Instruments.Split(','));
             var win = new View.MainWindow(service);
+            Console.WriteLine("show window");
             win.Show();
             var mt4Server = new MT4Server(service);
+            Console.WriteLine("start mt4 server");
             mt4Server.Start();
+            Console.WriteLine("app started");
         }
 
         private void ShowAccountSetting(LineTrader.Properties.Settings settings)

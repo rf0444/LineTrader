@@ -106,5 +106,17 @@ namespace LineTrader.Properties {
                 this["ManualClose"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("E. Europe Standard Time")]
+        public string MT4TimeZone {
+            get {
+                return ((string)(this["MT4TimeZone"]));
+            }
+            set {
+                this["MT4TimeZone"] = value;
+            }
+        }
     }
 }

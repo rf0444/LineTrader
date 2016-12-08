@@ -77,12 +77,7 @@ string close_data() {
 string price() {
   MqlTick tick;
   SymbolInfoTick(Symbol(), tick);
-  return StringFormat("{\"ask\":%s,\"bid\":%s,\"time\":%d}", DoubleToString(Ask, Digits), DoubleToString(Bid, Digits), utc_time(tick.time));
-}
-datetime utc_time(datetime t) {
-  datetime c = TimeCurrent();
-  datetime g = TimeGMT();
-  return t - c + g;
+  return StringFormat("{\"ask\":%s,\"bid\":%s,\"time\":\"%s\"}", DoubleToString(Ask, Digits), DoubleToString(Bid, Digits), datetime_to_string(tick.time));
 }
 
 bool chart_object_changed(const int id) {

@@ -23,5 +23,8 @@
     <Setting Name="ManualClose" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="MT4TimeZone" Type="System.String" Scope="User">
+      <Value Profile="(Default)">E. Europe Standard Time</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -37,32 +37,23 @@ namespace LineTrader.Model.MT4
         {
             get
             {
-                if (start == null)
-                {
-                    return null;
-                }
-                return TimeZoneInfo.ConvertTime(DateTime.Parse(start), ChartTimeZone, TimeZoneInfo.Local);
+                return MT4.Environment.ToDateTime(start);
             }
         }
         public DateTime? EndDateTime
         {
             get
             {
-                if (end == null)
-                {
-                    return null;
-                }
-                return DateTime.Parse(end);
+                return MT4.Environment.ToDateTime(end);
             }
         }
-        public readonly TimeZoneInfo ChartTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
     }
 
     public class Price
     {
         public decimal ask { get; set; }
         public decimal bid { get; set; }
-        public long time { get; set; }
+        public string time { get; set; }
         public decimal spread
         {
             get
@@ -70,12 +61,31 @@ namespace LineTrader.Model.MT4
                 return ask - bid;
             }
         }
-        public DateTime DateTime
+        public DateTime? DateTime
         {
             get
             {
-                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(time).ToLocalTime();
+                return MT4.Environment.ToDateTime(time);
             }
+        }
+    }
+
+    public static class Environment
+    {
+        public static readonly TimeZoneInfo ChartTimeZone = TimeZoneInfo.FindSystemTimeZoneById(LineTrader.Properties.Settings.Default.MT4TimeZone);
+
+        public static DateTime? ToDateTime(string s)
+        {
+            if (s == null)
+            {
+                return null;
+            }
+            DateTime t;
+            if (!DateTime.TryParse(s, out t))
+            {
+                return null;
+            }
+            return TimeZoneInfo.ConvertTime(t, ChartTimeZone, TimeZoneInfo.Local);
         }
     }
 }

@@ -136,7 +136,7 @@ namespace LineTrader.View
                     this.service.Account
                 )
                 .Where(_ => this.selectedOrderTab.Value == 0)
-                .Subscribe(_ => UpdateOrderPerview())
+                .Subscribe(_ => UpdateOrderPreview())
             ;
             this.positions = new Positions();
             this.dataGrid_Positions.DataContext = this.positions.Items;
@@ -155,6 +155,7 @@ namespace LineTrader.View
 
         private void listView_Instruments_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Console.WriteLine("instrument selected");
             var selected = this.listView_Instruments.SelectedItem as string;
             if (selected == null)
             {
@@ -165,6 +166,7 @@ namespace LineTrader.View
 
         private void checkBox_Buy_Changed(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("checkbox buy change");
             var c = sender as CheckBox;
             var ctx = c.DataContext as Line;
             ctx.Buy = c.IsChecked ?? false;
@@ -173,6 +175,7 @@ namespace LineTrader.View
 
         private void checkBox_Sell_Changed(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("checkbox buy change");
             var c = sender as CheckBox;
             var ctx = c.DataContext as Line;
             ctx.Sell = c.IsChecked ?? false;
@@ -215,11 +218,13 @@ namespace LineTrader.View
 
         private void tabControl_order_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Console.WriteLine("tab selected");
             this.orderTabSelected?.OnNext(this.tabControl_order.SelectedIndex);
         }
 
         private void dataGrid_Positions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Console.WriteLine("position selected");
             this.button_Close.IsEnabled = this.dataGrid_Positions.SelectedItems.Count > 0;
             e.Handled = true;
         }
@@ -270,8 +275,9 @@ namespace LineTrader.View
             return true;
         }
 
-        private void UpdateOrderPerview()
+        private void UpdateOrderPreview()
         {
+            Console.WriteLine("update order preview");
             var name = this.selectedInstrument.Value;
             var lines = (name == null) ? null : this.lines[name];
             var instrument = (name == null) ? null : this.service.Instruments[name];
@@ -316,6 +322,7 @@ namespace LineTrader.View
 
         public void UpdatePositions()
         {
+            Console.WriteLine("update positions");
             var positions = this.service.Positions.Value;
             var account = this.service.Account.Value;
             var view = (positions == null) ? new Position[] { } : positions.Select(model =>
@@ -364,7 +371,7 @@ namespace LineTrader.View
             win.RiskUpdated += setting =>
             {
                 this.riskSetting = setting;
-                UpdateOrderPerview();
+                UpdateOrderPreview();
                 UpdateCloseButtonVisiblity();
             };
             win.ShowDialog();
@@ -380,6 +387,7 @@ namespace LineTrader.View
 
         private void viewCheck_Updated(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("view check updated");
             this.viewCheckUpdated?.OnNext(null);
         }
     }

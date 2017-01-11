@@ -1,4 +1,5 @@
-﻿using Reactive.Bindings;
+﻿using NLog;
+using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace LineTrader.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private RiskSetting riskSetting;
         private Model.Service service;
 
@@ -155,7 +158,7 @@ namespace LineTrader.View
 
         private void listView_Instruments_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Console.WriteLine("instrument selected");
+            logger.Trace("instrument selected");
             var selected = this.listView_Instruments.SelectedItem as string;
             if (selected == null)
             {
@@ -166,7 +169,7 @@ namespace LineTrader.View
 
         private void checkBox_Buy_Changed(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("checkbox buy change");
+            logger.Trace("checkbox buy change");
             var c = sender as CheckBox;
             var ctx = c.DataContext as Line;
             ctx.Buy = c.IsChecked ?? false;
@@ -175,7 +178,7 @@ namespace LineTrader.View
 
         private void checkBox_Sell_Changed(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("checkbox buy change");
+            logger.Trace("checkbox buy change");
             var c = sender as CheckBox;
             var ctx = c.DataContext as Line;
             ctx.Sell = c.IsChecked ?? false;
@@ -218,13 +221,13 @@ namespace LineTrader.View
 
         private void tabControl_order_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Console.WriteLine("tab selected");
+            logger.Trace("tab selected");
             this.orderTabSelected?.OnNext(this.tabControl_order.SelectedIndex);
         }
 
         private void dataGrid_Positions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Console.WriteLine("position selected");
+            logger.Trace("position selected");
             this.button_Close.IsEnabled = this.dataGrid_Positions.SelectedItems.Count > 0;
             e.Handled = true;
         }
@@ -277,7 +280,7 @@ namespace LineTrader.View
 
         private void UpdateOrderPreview()
         {
-            Console.WriteLine("update order preview");
+            logger.Trace("update order preview");
             var name = this.selectedInstrument.Value;
             var lines = (name == null) ? null : this.lines[name];
             var instrument = (name == null) ? null : this.service.Instruments[name];
@@ -322,7 +325,7 @@ namespace LineTrader.View
 
         public void UpdatePositions()
         {
-            Console.WriteLine("update positions");
+            logger.Trace("update positions");
             var positions = this.service.Positions.Value;
             var account = this.service.Account.Value;
             var view = (positions == null) ? new Position[] { } : positions.Select(model =>
@@ -387,7 +390,7 @@ namespace LineTrader.View
 
         private void viewCheck_Updated(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("view check updated");
+            logger.Trace("view check updated");
             this.viewCheckUpdated?.OnNext(null);
         }
     }

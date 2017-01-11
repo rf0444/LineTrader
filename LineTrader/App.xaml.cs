@@ -1,4 +1,4 @@
-﻿using System;
+﻿using NLog;
 using System.Windows;
 
 namespace LineTrader
@@ -8,19 +8,23 @@ namespace LineTrader
     /// </summary>
     public partial class App : Application
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            logger.Debug("start app");
             var settings = LineTrader.Properties.Settings.Default;
             if (settings.AccountToken == "" || settings.AccountId == 0)
             {
+                logger.Debug("no setting");
                 ShowAccountSetting(settings);
                 return;
             }
             var restClient = new Model.Oanda.RestClient(settings.Practice, settings.AccountToken, settings.AccountId);
-            Console.WriteLine("get account");
+            logger.Debug("getting account");
             restClient.GetAccount().ContinueWith(s =>
             {
-                Console.WriteLine("got account");
+                logger.Debug("got account");
                 Dispatcher.Invoke(() =>
                 {
                     if (s.IsFaulted || s.IsCanceled)
@@ -29,7 +33,7 @@ namespace LineTrader
                     }
                     else
                     {
-                        Console.WriteLine("start app");
+                        logger.Debug("start app");
                         StartApplication(settings, restClient);
                     }
                 });
@@ -40,12 +44,13 @@ namespace LineTrader
         {
             var service = new Model.Service(restClient, settings.Instruments.Split(','));
             var win = new View.MainWindow(service);
-            Console.WriteLine("show window");
+            logger.Debug("showing window");
             win.Show();
+            logger.Debug("window shown");
             var mt4Server = new MT4Server(service);
-            Console.WriteLine("start mt4 server");
+            logger.Debug("start mt4 server");
             mt4Server.Start();
-            Console.WriteLine("app started");
+            logger.Debug("app started");
         }
 
         private void ShowAccountSetting(LineTrader.Properties.Settings settings)

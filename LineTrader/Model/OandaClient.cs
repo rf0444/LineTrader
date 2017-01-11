@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,6 +13,8 @@ namespace LineTrader.Model.Oanda
 {
     public class RestClient : IDisposable
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private HttpClient http;
         private long accountId;
         private string hostBase;
@@ -122,7 +125,7 @@ namespace LineTrader.Model.Oanda
                 }
                 else
                 {
-                    Console.WriteLine("{0} - {1} {2}", result.RequestMessage.RequestUri, result.StatusCode, result.Content.ReadAsStringAsync().Result);
+                    logger.Error("{0} - {1} {2}", result.RequestMessage.RequestUri, result.StatusCode, result.Content.ReadAsStringAsync().Result);
                     //subject.OnError(new Exception());
                 }
             });
